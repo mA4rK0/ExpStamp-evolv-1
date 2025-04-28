@@ -6,6 +6,9 @@ export default function Mint() {
   const address = useActiveAccount();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [nftName, setIsNftName] = useState<string>("");
+  const [nftDescription, setIsNftDescription] = useState<string>("");
+  const [mintingNft, setIsMintingNft] = useState<boolean>(false);
 
   const processFile = (file: File) => {
     const reader = new FileReader();
@@ -32,7 +35,7 @@ export default function Mint() {
   return (
     <div className="h-screen bg-black text-white">
       {address ? (
-        <div className="w-full h-full flex justify-center mx-auto">
+        <div className="w-full h-full flex justify-center mx-auto gap-x-7">
           <div className="flex flex-col">
             <h1 className="text-2xl font-bold mt-10 mb-5">NFT Image</h1>
             <div onClick={handleFileSelect} className="flex items-center justify-center w-[40rem] h-[25rem] border-2 border-dashed border-gray-300 cursor-pointer overflow-hidden">
@@ -56,6 +59,16 @@ export default function Mint() {
                 </button>
               </div>
             )}
+          </div>
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold mt-10 mb-9">NFT Metadata</h1>
+            <p className="mb-3">NFT Name:</p>
+            <input type="text" placeholder="My NFT Name" value={nftName} onChange={(e) => setIsNftName(e.target.value)} className="border border-gray-300 rounded-md mb-7 w-[40rem] p-3" />
+            <p className="mb-3">NFT Description:</p>
+            <input type="text" placeholder="My NFT is unique" value={nftDescription} onChange={(e) => setIsNftDescription(e.target.value)} className="border border-gray-300 rounded-md w-[40rem] p-3" />
+            <button className="border border-indigo-600 hover:bg-indigo-600 mt-12 w-[40rem] p-2 cursor-pointer transition duration-300 ease-in-out" disabled={mintingNft}>
+              {mintingNft ? "Minting..." : "Mint NFT"}
+            </button>
           </div>
         </div>
       ) : (
