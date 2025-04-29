@@ -2,8 +2,26 @@
 
 pragma solidity ^0.8.19;
 
-contract NftCollection {
-    constructor() {
-        
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+contract NftCollection is ERC721 {
+    event NftMinted(address indexed minter, uint256 indexed tokenId, string tokenUri);
+
+    uint256 private s_tokenCounter;
+    mapping(uint256 => string) private s_tokenIdToUri;
+
+    constructor() ERC721("ExpStamp", "EXPS") {
+        s_tokenCounter = 0;
+    }
+
+    function mintNft(string memory tokenUri) public {
+        s_tokenIdToUri[s_tokenCounter] = tokenUri;
+        _safeMint(msg.sender, s_tokenCounter);
+        emit NftMinted(msg.sender, s_tokenCounter, tokenUri);
+        s_tokenCounter++;
+    }
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        return s_tokenIdToUri[tokenId];
     }
 }
