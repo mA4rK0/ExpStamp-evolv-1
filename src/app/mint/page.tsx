@@ -1,8 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
 import { MediaRenderer, useActiveAccount } from "thirdweb/react";
-// import { pinata } from "@/utils/config";
-// import { POST } from "../../api/metadata/metadata";
 
 export default function Mint() {
   const address = useActiveAccount();
@@ -50,15 +48,25 @@ export default function Mint() {
         body: formData,
       });
 
-      const uploadData = await uploadRes.json();
-      console.log("Uploaded image:", uploadData);
+      const rawText = await uploadRes.text();
+      console.log("Upload response text:", rawText);
 
-      if (uploadData.error) {
-        console.error("Upload failed:", uploadData.error);
+      let uploadData;
+      try {
+        uploadData = JSON.parse(rawText);
+      } catch (e) {
+        console.error("Response is not valid JSON:", rawText);
+        throw new Error("Server did not return valid JSON");
+      }
+
+      const ipfsHash = uploadData.IpfsHash;
+
+      if (!ipfsHash) {
+        console.error("Upload failed or unexpected response format:", uploadData);
         throw new Error("Image upload failed");
       }
 
-      const imageIpfsUrl = `https://gateway.pinata.cloud/ipfs/${uploadData.data.IpfsHash}`;
+      const imageIpfsUrl = `https://gateway.pinata.cloud/ipfs/${ipfsHash}`;
 
       const metadataRes = await fetch("/api/metadata", {
         method: "POST",
