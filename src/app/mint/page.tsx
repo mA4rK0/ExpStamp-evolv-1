@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useState } from "react";
 import { MediaRenderer, useActiveAccount } from "thirdweb/react";
+// import { pinata } from "@/utils/config";
+// import { POST } from "../../api/metadata/metadata";
 
 export default function Mint() {
   const address = useActiveAccount();
@@ -9,6 +11,7 @@ export default function Mint() {
   const [nftName, setIsNftName] = useState<string>("");
   const [nftDescription, setIsNftDescription] = useState<string>("");
   const [mintingNft, setIsMintingNft] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>(null);
 
   const processFile = (file: File) => {
     const reader = new FileReader();
@@ -21,12 +24,62 @@ export default function Mint() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      processFile(files[0]);
+      const selectedFile = files[0];
+      setFile(selectedFile);
+      processFile(selectedFile);
     }
   };
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleSubmit = async () => {
+    setIsMintingNft(true);
+
+    try {
+      if (!file) {
+        throw new Error("No file selected");
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const uploadData = await uploadRes.json();
+      console.log("Uploaded image:", uploadData);
+
+      if (uploadData.error) {
+        console.error("Upload failed:", uploadData.error);
+        throw new Error("Image upload failed");
+      }
+
+      const imageIpfsUrl = `https://gateway.pinata.cloud/ipfs/${uploadData.data.IpfsHash}`;
+
+      const metadataRes = await fetch("/api/metadata", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: nftName,
+          description: nftDescription,
+          imageUrl: imageIpfsUrl,
+        }),
+      });
+
+      const metadataData = await metadataRes.json();
+      console.log("Uploaded metadata:", metadataData);
+      alert("NFT minted successfully");
+    } catch (error) {
+      console.log(error);
+    }
+
+    setIsMintingNft(false);
   };
 
   const reset = () => {
@@ -66,7 +119,7 @@ export default function Mint() {
             <input type="text" placeholder="My NFT Name" value={nftName} onChange={(e) => setIsNftName(e.target.value)} className="border border-gray-300 rounded-md mb-7 w-[40rem] p-3" />
             <p className="mb-3">NFT Description:</p>
             <input type="text" placeholder="My NFT is unique" value={nftDescription} onChange={(e) => setIsNftDescription(e.target.value)} className="border border-gray-300 rounded-md w-[40rem] p-3" />
-            <button className="border border-indigo-600 hover:bg-indigo-600 mt-12 w-[40rem] p-2 cursor-pointer transition duration-300 ease-in-out" disabled={mintingNft}>
+            <button onClick={handleSubmit} className="border border-indigo-600 hover:bg-indigo-600 mt-12 w-[40rem] p-2 cursor-pointer transition duration-300 ease-in-out" disabled={mintingNft}>
               {mintingNft ? "Minting..." : "Mint NFT"}
             </button>
           </div>
