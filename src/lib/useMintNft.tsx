@@ -1,12 +1,18 @@
-import { prepareContractCall } from "thirdweb";
-import { useSendAndConfirmTransaction } from "thirdweb/react";
+"use client";
+
+import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
+import { useActiveAccount } from "thirdweb/react";
 import { contract } from "@/api/key/connect";
 
 export default function useMintNft() {
-  const { mutateAsync: sendAndConfirm } = useSendAndConfirmTransaction();
+  const account = useActiveAccount();
 
   const mintNft = async (tokenUri: string) => {
     try {
+      if (!account) {
+        throw new Error("Wallet not connected");
+      }
+
       const transaction = prepareContractCall({
         contract,
         method: "function mintNft(string tokenUri)",
@@ -14,7 +20,12 @@ export default function useMintNft() {
       });
 
       console.log("Sending transaction with URI:", tokenUri);
-      const txResult = await sendAndConfirm(transaction);
+
+      const txResult = await sendAndConfirmTransaction({
+        account,
+        transaction,
+      });
+
       console.log("✅ Mint confirmed:", txResult.transactionHash);
       alert("NFT minted! Tx: " + txResult.transactionHash);
     } catch (err) {
