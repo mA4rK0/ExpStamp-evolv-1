@@ -12,7 +12,7 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
       <div className="flex flex-wrap gap-x-8">
-        {["Mint", "Collection"].map((item) => (
+        {["Mint", "Collection"].map((item: string) => (
           <Link key={item} href={`/${item.toLowerCase()}`} className="hover:text-indigo-600 transition ease-in-out duration-300">
             <p>{item}</p>
           </Link>

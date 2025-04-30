@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { MediaRenderer, useActiveAccount } from "thirdweb/react";
+import useMintNft from "@/lib/useMintNft";
 
 export default function Mint() {
   const address = useActiveAccount();
@@ -10,6 +11,8 @@ export default function Mint() {
   const [nftDescription, setIsNftDescription] = useState<string>("");
   const [mintingNft, setIsMintingNft] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+
+  const { mintNft } = useMintNft();
 
   const processFile = (file: File) => {
     const reader = new FileReader();
@@ -82,6 +85,9 @@ export default function Mint() {
 
       const metadataData = await metadataRes.json();
       console.log("Uploaded metadata:", metadataData);
+      if (metadataData) {
+        mintNft(`ipfs://${metadataData.IpfsHash}`);
+      }
       alert("NFT minted successfully");
     } catch (error) {
       console.log(error);
