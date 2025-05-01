@@ -15,7 +15,7 @@ contract NftCollection is ERC721 {
         s_tokenCounter = 0;
     }
 
-    function mintNft(string calldata tokenUri) public {
+    function mintNft(string calldata tokenUri) external {
         s_tokenIdToUri[s_tokenCounter] = tokenUri;
         _safeMint(msg.sender, s_tokenCounter);
         s_ownerToTokens[msg.sender].push(s_tokenCounter);
@@ -27,7 +27,14 @@ contract NftCollection is ERC721 {
         return s_tokenIdToUri[tokenId];
     }
 
-    function getUserTokens() public view returns (uint256[] memory) {
-        return s_ownerToTokens[msg.sender];
+    function getUserTokenUris() external view returns (string[] memory) {
+        uint256[] memory tokenIds = s_ownerToTokens[msg.sender];
+        string[] memory uris = new string[](tokenIds.length);
+
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            uris[i] = s_tokenIdToUri[tokenIds[i]];
+        }
+
+        return uris;
     }
 }

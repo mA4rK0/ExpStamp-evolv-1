@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { MediaRenderer, useActiveAccount } from "thirdweb/react";
+import client from "@/api/key/connect";
 import useMintNft from "@/lib/useMintNft";
 
 export default function Mint() {
@@ -86,9 +87,9 @@ export default function Mint() {
       const metadataData = await metadataRes.json();
       console.log("Uploaded metadata:", metadataData);
       if (metadataData) {
-        mintNft(`ipfs://${metadataData.IpfsHash}`);
+        await mintNft(`ipfs://${metadataData.IpfsHash}`);
+        alert("NFT minted successfully");
       }
-      alert("NFT minted successfully");
     } catch (error) {
       console.log(error);
     }
@@ -114,7 +115,7 @@ export default function Mint() {
               ) : (
                 <>
                   <div>
-                    <MediaRenderer src={imageUrl} className="w-full h-full object-cover" />
+                    <MediaRenderer client={client} src={imageUrl} className="w-full h-full object-cover" />
                   </div>
                 </>
               )}
