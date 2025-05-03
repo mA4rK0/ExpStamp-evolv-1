@@ -20,15 +20,17 @@ contract NftCollection is ERC721 {
         _safeMint(msg.sender, s_tokenCounter);
         s_ownerToTokens[msg.sender].push(s_tokenCounter);
         emit NftMinted(msg.sender, s_tokenCounter, tokenUri);
-        s_tokenCounter++;
+        unchecked {
+            s_tokenCounter++;
+        }
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         return s_tokenIdToUri[tokenId];
     }
 
-    function getUserTokenUris() external view returns (string[] memory) {
-        uint256[] memory tokenIds = s_ownerToTokens[msg.sender];
+    function getUserTokenUris(address user) external view returns (string[] memory) {
+        uint256[] memory tokenIds = s_ownerToTokens[user];
         string[] memory uris = new string[](tokenIds.length);
 
         for (uint256 i = 0; i < tokenIds.length; i++) {

@@ -1,33 +1,41 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useActiveAccount } from "thirdweb/react";
-import getNfts from "@/lib/getNfts";
+import { readContract } from "thirdweb";
+import { contract } from "@/api/key/connect";
 
 export default function CollectionPage() {
   const account = useActiveAccount();
-  const { getUserTokenUris } = getNfts();
-  const [tokenUris, setTokenUris] = useState<string[]>([]);
+  const [tokenUris, setTokenUris] = useState<string[] | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!account) return;
-    const fetchData = async () => {
-      setLoading(true);
-      const uris = await getUserTokenUris();
-      setTokenUris(uris);
-      setLoading(false);
-    };
-
-    fetchData();
+    if (account) {
+      async function fetchTokenUris() {
+        setLoading(true);
+        const data = await readContract({
+          contract,
+          method: "function getUserTokenUris(address user) view returns (string[])",
+          params: [account?.address ?? ""],
+        });
+        console.log(data);
+        setTokenUris(data as string[]);
+        setLoading(false);
+      }
+      fetchTokenUris();
+    }
   }, [account]);
+
+  if (!account) return <p>Silakan hubungkan wallet</p>;
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div>
-      {loading ? (
-        <p>Loading NFTs...</p>
-      ) : tokenUris.length > 0 ? (
+      {(tokenUris ?? []).length > 0 ? (
         <div>
-          {tokenUris.map((uri, idx) => (
+          {tokenUris?.map((uri, idx) => (
             <div key={idx}>{uri}</div>
           ))}
         </div>
