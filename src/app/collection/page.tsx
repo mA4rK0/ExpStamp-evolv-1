@@ -1,10 +1,15 @@
 "use client";
+import Link from "next/link";
+import { Copy, CopyCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
+import copyToClipboard from "@/utils/copyAddress";
 
 export default function CollectionPage() {
   const account = useActiveAccount();
   const [nfts, setNfts] = useState([]);
+  const [isCopied, setIsCopied] = useState<string>();
+  const [isHover, setIsHover] = useState<string>();
 
   useEffect(() => {
     if (!account) return;
@@ -18,24 +23,55 @@ export default function CollectionPage() {
     fetchNFTs();
   }, [account]);
 
+  const handleCopy = async (value: string) => {
+    try {
+      await copyToClipboard(value);
+      setIsCopied(value);
+      setTimeout(() => {
+        setIsCopied("");
+        setIsHover("");
+      }, 500);
+    } catch (error) {
+      console.log("Clipboard API not supported");
+    }
+  };
+
   return (
-    <div>
-      <h1>My NFTs</h1>
-      {nfts.length === 0 && <p>No NFTs found.</p>}
-      <ul>
-        {nfts.map((nft: any, i) => (
-          <li key={i}>
-            {nft.media?.[0]?.gateway ? (
-              <img src={nft.media[0].gateway} alt={nft.title || "NFT"} width={100} />
-            ) : (
-              <div style={{ width: 100, height: 100, background: "#eee" }}>
-                <p>No image</p>
+    <div className="p-6 bg-black min-h-screen">
+      <h1 className="text-2xl font-bold mb-6 text-white">My NFTs</h1>
+
+      {nfts.length === 0 ? (
+        <p className="text-gray-400">No NFTs found.</p>
+      ) : (
+        <ul className="flex flex-wrap gap-10 justify-center">
+          {nfts.map((nft: any, i) => (
+            <li key={i} className="group bg-neutral-800 rounded-2xl p-4 shadow-white hover:shadow-lg transition-shadow duration-300 border border-neutral-700 w-72 h-96">
+              <div className="relative overflow-hidden rounded-lg mb-10">
+                {nft.media?.[0]?.gateway ? (
+                  <img src={nft.media[0].gateway} alt={nft.title || "NFT"} className="w-full h-48 object-cover rounded-lg transition-transform duration-500 ease-in-out group-hover:scale-125" />
+                ) : (
+                  <div className="w-full h-48 bg-neutral-700 flex items-center justify-center rounded-lg">
+                    <p className="text-sm text-gray-400">No image</p>
+                  </div>
+                )}
               </div>
-            )}
-            <p>{nft.title || "No title"}</p>
-          </li>
-        ))}
-      </ul>
+              <h2 className="text-lg font-semibold text-white mb-2">{nft.title || "No title"}</h2>
+              <p className="text-sm text-gray-400 mb-2">ID: {parseInt(nft.id.tokenId, 16)}</p>
+              <div className="flex items-center gap-2 cursor-pointer relative">
+                <Link target="_blank" href={`https://testnets.opensea.io/assets/sepolia/${nft.contract.address}/${parseInt(nft.id.tokenId, 16)}`} className="text-md text-blue-400 hover:underline break-all">
+                  {`${nft.contract.address.slice(0, 5)}...${nft.contract.address.slice(-4)}`}
+                </Link>
+                {isHover == nft.contract.address && <div className="absolute -top-5 left-24 bg-black text-white px-2 text-xs rounded-sm">Copy</div>}
+                {isCopied == nft.contract.address ? (
+                  <CopyCheck className="size-5 text-white" />
+                ) : (
+                  <Copy className="size-5 text-white" onClick={() => handleCopy(nft.contract.address)} onMouseEnter={() => setIsHover(nft.contract.address)} onMouseLeave={() => setIsHover("")} />
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
