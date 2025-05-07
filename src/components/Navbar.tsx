@@ -1,13 +1,19 @@
 "use client";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import { sepolia, arbitrumSepolia, arbitrum } from "thirdweb/chains";
 import client from "@/api/key/connect";
 
 const Navbar: React.FC = () => {
+  const pathname = usePathname();
   const account = useActiveAccount();
   const isDisabled = !!account;
+
+  const navItems = [
+    { href: "/mint", label: "Mint" },
+    { href: "/collection", label: "Collection" },
+  ];
 
   return (
     <div className="flex flex-wrap fixed w-full px-7 py-3 bg-[#212121] text-white items-center justify-between z-20">
@@ -24,9 +30,9 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
       <div className="flex flex-wrap gap-x-8">
-        {["Mint", "Collection"].map((item: string) => (
-          <Link key={item} href={`/${item.toLowerCase()}`} className="hover:text-indigo-600 transition ease-in-out duration-300">
-            <p>{item}</p>
+        {navItems.map(({ href, label }) => (
+          <Link key={label} href={href} className={`hover:text-indigo-500 transition ease-in-out duration-300 ${pathname === href ? "text-indigo-500" : "text-white"}`}>
+            <p>{label}</p>
           </Link>
         ))}
       </div>

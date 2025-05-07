@@ -2,7 +2,7 @@ import "@/app/loading.css";
 
 export default function Loading() {
   return (
-    <div className="flex flex-col justify-center items-center text-white w-full h-screen bg-black backdrop-opacity-65 z-30">
+    <div className="flex flex-col justify-center items-center text-white w-full h-screen bg-black z-30">
       <div>
         <div className="spinner">
           <div className="bounce1"></div>

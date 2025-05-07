@@ -2,12 +2,14 @@
 import Link from "next/link";
 import { Copy, CopyCheck } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useActiveAccount } from "thirdweb/react";
+import { useActiveAccount, useConnectModal } from "thirdweb/react";
+import client from "@/api/key/connect";
 import Loading from "@/components/Loading";
 import copyToClipboard from "@/utils/copyAddress";
 
 export default function CollectionPage() {
   const account = useActiveAccount();
+  const { connect, isConnecting } = useConnectModal();
   const [hydration, setHydration] = useState(false);
   const [loading, isLoading] = useState(false);
   const [nfts, setNfts] = useState([]);
@@ -29,6 +31,20 @@ export default function CollectionPage() {
     fetchNFTs();
   }, [account]);
 
+  async function handleConnect() {
+    try {
+      const wallet = await connect({ client });
+      const account = wallet.getAccount();
+      await account?.signMessage({
+        message: "welcome to ExpStamp, you can mint your NFTs here. Currently, only Ethereum Sepolia is supported",
+      });
+
+      console.log("connected to", account);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const handleCopy = async (value: string) => {
     try {
       await copyToClipboard(value);
@@ -49,8 +65,18 @@ export default function CollectionPage() {
       ) : (
         <>
           <h1 className="flex justify-center text-4xl font-bold mt-24 mb-14 text-white">My NFTs</h1>
-
+          {!account && (
+            <>
+              <p className="text-center mx-auto mb-8 text-red-600 text-[1.406rem]">Connect a wallet to see your NFTs</p>{" "}
+              <div className="flex justify-center mb-11">
+                <button onClick={handleConnect} className="text-white text-[1.25rem] border rounded-full px-10 py-3 border-indigo-500 hover:bg-indigo-500 transition ease-in-out duration-300 cursor-pointer">
+                  Connect
+                </button>
+              </div>
+            </>
+          )}
           {hydration &&
+            account &&
             (nfts.length === 0 ? (
               <p className="text-center mx-auto text-gray-400 text-[1.406rem]">
                 No NFTs found. You can mint them{" "}
