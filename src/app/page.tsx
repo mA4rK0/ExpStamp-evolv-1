@@ -35,20 +35,20 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-wrap justify-center items-center min-h-screen w-full bg-black">
+    <div className="flex flex-col md:flex-row items-center justify-center min-h-screen w-full bg-black px-6 py-10 gap-10">
       {loading ? (
         <Loading />
       ) : (
         <>
-          <div>
-            <Stamp className="text-indigo-500 w-64 h-64" />
+          <div className="flex justify-center">
+            <Stamp className="text-indigo-500 w-32 h-32 md:w-64 md:h-64" />
           </div>
-          <div className="flex flex-col gap-y-14">
-            <p className="text-white text-5xl font-bold">
+          <div className="flex flex-col gap-6 text-center md:text-left max-w-[400px]">
+            <p className="text-white text-2xl md:text-5xl font-bold leading-snug">
               Mint your <span className="text-indigo-500">NFT</span>s now on <span className="text-indigo-500">Exp</span>Stamp!
             </p>
-            <div className="flex justify-center">
-              <button onClick={handleConnect} className="text-white text-[1.25rem] border rounded-full px-10 py-3 border-indigo-500 hover:bg-indigo-500 transition ease-in-out duration-300 cursor-pointer">
+            <div className="flex justify-center md:justify-start">
+              <button onClick={handleConnect} className="text-white text-[1rem] md:text-[1.25rem] border rounded-full px-8 py-3 border-indigo-500 hover:bg-indigo-500 transition ease-in-out duration-300 cursor-pointer">
                 Connect
               </button>
             </div>
