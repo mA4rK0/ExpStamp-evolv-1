@@ -133,56 +133,46 @@ export default function Mint() {
     setImageUrl(null);
   };
   return (
-    <div className="h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white px-4">
       {address ? (
-        <div className="w-full h-full flex justify-center mx-auto gap-x-7">
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-bold mt-32 mb-5">NFT Image</h1>
-            <div onClick={handleFileSelect} className="flex items-center justify-center w-[40rem] h-[25rem] border-2 border-dashed border-gray-300 cursor-pointer overflow-hidden">
+        <div className="w-full h-full flex flex-col md:flex-row justify-center items-start gap-10 py-12">
+          <div className="flex flex-col w-full md:w-auto">
+            <h1 className="text-2xl font-bold mt-10 md:mt-32 mb-5">NFT Image</h1>
+            <div onClick={handleFileSelect} className="flex items-center justify-center w-full md:w-[40rem] h-40 md:h-[25rem] border-2 border-dashed border-gray-300 cursor-pointer overflow-hidden">
               <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleChange} />
-              {!imageUrl ? (
-                <div>
-                  <p>Click to add file</p>
-                </div>
-              ) : (
-                <>
-                  <div>
-                    <MediaRenderer client={client} src={imageUrl} className="w-full h-full object-cover" />
-                  </div>
-                </>
-              )}
+              {!imageUrl ? <p>Click to add file</p> : <MediaRenderer client={client} src={imageUrl} className="w-full h-full object-cover" />}
             </div>
             {imageUrl && (
               <div className="flex justify-center mt-6">
-                <button onClick={reset} className="border border-red-600 rounded-md w-[15rem] hover:bg-red-600 hover:text-white text-red-600 text-md p-1 transition ease-in-out duration-300 cursor-pointer">
+                <button onClick={reset} className="border border-red-600 rounded-md w-full max-w-[15rem] hover:bg-red-600 hover:text-white text-red-600 text-md p-2 transition ease-in-out duration-300">
                   Reset
                 </button>
               </div>
             )}
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-bold mt-32 mb-9">NFT Metadata</h1>
-            <p className="mb-3">NFT Name:</p>
-            <input type="text" placeholder="My NFT Name" value={nftName} onChange={(e) => setIsNftName(e.target.value)} className={`border ${nameError ? "border-red-500 mb-2" : "border-gray-300 mb-7"} rounded-md w-[40rem] p-3`} />
-            {nameError && <p className="text-red-500 text-sm mb-6">{nameError}</p>}
-            <p className="mb-3">NFT Description:</p>
-            <input type="text" placeholder="My NFT is unique" value={nftDescription} onChange={(e) => setIsNftDescription(e.target.value)} className="border border-gray-300 rounded-md w-[40rem] p-3" />
-            <button onClick={handleSubmit} className="border border-indigo-600 hover:bg-indigo-600 mt-12 w-[40rem] p-2 cursor-pointer transition duration-300 ease-in-out" disabled={mintingNft}>
+
+          <div className="flex flex-col w-full md:w-auto">
+            <h1 className="text-2xl font-bold mt-10 md:mt-32 mb-9">NFT Metadata</h1>
+
+            <label className="mb-2">NFT Name:</label>
+            <input type="text" placeholder="My NFT Name" value={nftName} onChange={(e) => setIsNftName(e.target.value)} className={`border ${nameError ? "border-red-500 mb-2" : "border-gray-300 mb-5"} rounded-md w-full md:w-[40rem] p-3`} />
+            {nameError && <p className="text-red-500 text-sm mb-5">{nameError}</p>}
+
+            <label className="mb-2">NFT Description:</label>
+            <input type="text" placeholder="My NFT is unique" value={nftDescription} onChange={(e) => setIsNftDescription(e.target.value)} className="border border-gray-300 rounded-md w-full md:w-[40rem] p-3 mb-12" />
+
+            <button onClick={handleSubmit} className="border border-indigo-600 hover:bg-indigo-600 rounded-2xl w-full md:w-[40rem] p-3 transition duration-300 ease-in-out cursor-pointer" disabled={mintingNft}>
               {mintingNft ? "Minting..." : "Mint NFT"}
             </button>
           </div>
         </div>
       ) : (
-        <>
-          <div className="pt-32">
-            <p className="text-center mx-auto mb-8 text-red-600 text-[1.406rem]">sign in to mint an NFT</p>{" "}
-            <div className="flex justify-center mb-11">
-              <button onClick={handleConnect} className="text-white text-[1.25rem] border rounded-full px-10 py-3 border-indigo-500 hover:bg-indigo-500 transition ease-in-out duration-300 cursor-pointer">
-                Connect
-              </button>
-            </div>
-          </div>
-        </>
+        <div className="pt-32 text-center">
+          <p className="mb-8 text-red-600 text-lg">Sign in to mint an NFT</p>
+          <button onClick={handleConnect} className="text-white text-lg border rounded-full px-10 py-3 border-indigo-500 hover:bg-indigo-500 transition ease-in-out duration-300">
+            Connect
+          </button>
+        </div>
       )}
     </div>
   );
