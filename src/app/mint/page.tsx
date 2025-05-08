@@ -133,35 +133,86 @@ export default function Mint() {
     setImageUrl(null);
   };
   return (
+    // <div className="min-h-screen bg-black text-white px-4">
+    //   {address ? (
+    //     <div className="w-full h-full flex flex-col md:flex-row justify-center items-start md:pt-28 gap-10 py-24">
+    //       <div className="flex flex-col w-full md:w-auto">
+    //         <h1 className="text-2xl font-bold mb-5">NFT Image</h1>
+    //         <div onClick={handleFileSelect} className="flex items-center justify-center w-full md:w-[40rem] h-40 md:h-[25rem] border-2 border-dashed border-gray-300 cursor-pointer overflow-hidden">
+    //           <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleChange} />
+    //           {!imageUrl ? <p>Click to add file</p> : <MediaRenderer client={client} src={imageUrl} className="w-full h-full object-cover" />}
+    //         </div>
+    //         {imageUrl && (
+    //           <div className="flex justify-center mt-6">
+    //             <button onClick={reset} className="border border-red-600 rounded-md w-full max-w-[15rem] hover:bg-red-600 hover:text-white text-red-600 text-md p-2 cursor-pointer transition ease-in-out duration-300">
+    //               Reset
+    //             </button>
+    //           </div>
+    //         )}
+    //       </div>
+
+    //       <div className="flex flex-col w-full md:w-auto">
+    //         <h1 className="text-2xl font-bold mb-9">NFT Metadata</h1>
+
+    //         <label className="mb-2">NFT Name:</label>
+    //         <input type="text" placeholder="My NFT Name" value={nftName} onChange={(e) => setIsNftName(e.target.value)} className={`border ${nameError ? "border-red-500 mb-2" : "border-gray-300 mb-5"} rounded-md w-full md:w-[40rem] p-3`} />
+    //         {nameError && <p className="text-red-500 text-sm mb-5">{nameError}</p>}
+
+    //         <label className="mb-2">NFT Description:</label>
+    //         <input type="text" placeholder="My NFT is unique" value={nftDescription} onChange={(e) => setIsNftDescription(e.target.value)} className="border border-gray-300 rounded-md w-full md:w-[40rem] p-3 mb-12" />
+
+    //         <button onClick={handleSubmit} className="border border-indigo-600 hover:bg-indigo-600 rounded-2xl w-full md:w-[40rem] p-3 transition duration-300 ease-in-out cursor-pointer" disabled={mintingNft}>
+    //           {mintingNft ? "Minting..." : "Mint NFT"}
+    //         </button>
+    //       </div>
+    //     </div>
+    //   ) : (
+    //     <div className="pt-32 text-center">
+    //       <p className="mb-8 text-red-600 text-lg">Sign in to mint an NFT</p>
+    //       <button onClick={handleConnect} className="text-white text-lg border rounded-full px-10 py-3 border-indigo-500 hover:bg-indigo-500 transition ease-in-out duration-300">
+    //         Connect
+    //       </button>
+    //     </div>
+    //   )}
+    // </div>
+
     <div className="min-h-screen bg-black text-white px-4">
       {address ? (
-        <div className="w-full h-full flex flex-col md:flex-row justify-center items-start gap-10 py-12">
-          <div className="flex flex-col w-full md:w-auto">
-            <h1 className="text-2xl font-bold mt-10 md:mt-32 mb-5">NFT Image</h1>
-            <div onClick={handleFileSelect} className="flex items-center justify-center w-full md:w-[40rem] h-40 md:h-[25rem] border-2 border-dashed border-gray-300 cursor-pointer overflow-hidden">
+        <div className="w-full h-full flex flex-col md:flex-row justify-center items-start md:pt-28 gap-10 md:gap-12 lg:gap-20 py-24 md:max-w-[90%] lg:max-w-none mx-auto">
+          {/* NFT Image Section */}
+          <div className="flex flex-col w-full md:w-[50%] lg:w-auto">
+            <h1 className="text-2xl font-bold mb-5">NFT Image</h1>
+            <div onClick={handleFileSelect} className="flex items-center justify-center w-full md:w-full lg:w-[40rem] h-40 md:h-[20rem] lg:h-[25rem] border-2 border-dashed border-gray-300 cursor-pointer overflow-hidden">
               <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleChange} />
               {!imageUrl ? <p>Click to add file</p> : <MediaRenderer client={client} src={imageUrl} className="w-full h-full object-cover" />}
             </div>
             {imageUrl && (
               <div className="flex justify-center mt-6">
-                <button onClick={reset} className="border border-red-600 rounded-md w-full max-w-[15rem] hover:bg-red-600 hover:text-white text-red-600 text-md p-2 transition ease-in-out duration-300">
+                <button onClick={reset} className="border border-red-600 rounded-md w-full max-w-[15rem] hover:bg-red-600 hover:text-white text-red-600 text-md p-2 cursor-pointer transition ease-in-out duration-300">
                   Reset
                 </button>
               </div>
             )}
           </div>
 
-          <div className="flex flex-col w-full md:w-auto">
-            <h1 className="text-2xl font-bold mt-10 md:mt-32 mb-9">NFT Metadata</h1>
+          {/* NFT Metadata Section */}
+          <div className="flex flex-col w-full md:w-[50%] lg:w-auto">
+            <h1 className="text-2xl font-bold mb-9">NFT Metadata</h1>
 
             <label className="mb-2">NFT Name:</label>
-            <input type="text" placeholder="My NFT Name" value={nftName} onChange={(e) => setIsNftName(e.target.value)} className={`border ${nameError ? "border-red-500 mb-2" : "border-gray-300 mb-5"} rounded-md w-full md:w-[40rem] p-3`} />
+            <input
+              type="text"
+              placeholder="My NFT Name"
+              value={nftName}
+              onChange={(e) => setIsNftName(e.target.value)}
+              className={`border ${nameError ? "border-red-500 mb-2" : "border-gray-300 mb-5"} rounded-md w-full md:w-full lg:w-[40rem] p-3`}
+            />
             {nameError && <p className="text-red-500 text-sm mb-5">{nameError}</p>}
 
             <label className="mb-2">NFT Description:</label>
-            <input type="text" placeholder="My NFT is unique" value={nftDescription} onChange={(e) => setIsNftDescription(e.target.value)} className="border border-gray-300 rounded-md w-full md:w-[40rem] p-3 mb-12" />
+            <input type="text" placeholder="My NFT is unique" value={nftDescription} onChange={(e) => setIsNftDescription(e.target.value)} className="border border-gray-300 rounded-md w-full md:w-full lg:w-[40rem] p-3 mb-12" />
 
-            <button onClick={handleSubmit} className="border border-indigo-600 hover:bg-indigo-600 rounded-2xl w-full md:w-[40rem] p-3 transition duration-300 ease-in-out cursor-pointer" disabled={mintingNft}>
+            <button onClick={handleSubmit} className="border border-indigo-600 hover:bg-indigo-600 rounded-2xl w-full md:w-full lg:w-[40rem] p-3 transition duration-300 ease-in-out cursor-pointer" disabled={mintingNft}>
               {mintingNft ? "Minting..." : "Mint NFT"}
             </button>
           </div>
