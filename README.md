@@ -32,6 +32,10 @@ Decentralised platform for minting NFTs
    SMART_CONTRACT_ADDRESS=YOUR_SMART_CONTRACT_MINT_NFT_ADDRESS
    ```
 2. Then, type `source .env` in the terminal to read the `.env` file:
-   ```source .env```
-3. Run the project by typing:
-   ```npm run dev```
+   ```
+   source .env
+   ```
+4. Run the project by typing:
+   ```
+   npm run dev
+   ```
