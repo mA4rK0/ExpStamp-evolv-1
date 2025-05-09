@@ -31,3 +31,7 @@ Decentralised platform for minting NFTs
    ETHERSCAN_API_KEY=YOUR_ETHERSCAN_API_KEY
    SMART_CONTRACT_ADDRESS=YOUR_SMART_CONTRACT_MINT_NFT_ADDRESS
    ```
+2. Then, type `source .env` in the terminal to read the `.env` file:
+   ```source .env```
+3. Run the project by typing:
+   ```npm run dev```
